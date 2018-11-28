@@ -5,7 +5,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'org.breeze.work:generateCode:1.0'
+        classpath 'org.breeze.work:gradle-plugins:1.0'
     }
 }
 
@@ -17,6 +17,7 @@ plugins {
 
 // 只能这样写
 apply plugin: 'generateCode'
+apply plugin: 'apiDoc'
 
 generateCode {
     host '192.168.88.23'
@@ -29,6 +30,10 @@ generateCode {
     servicePath 'service'
     serviceImplPath 'service.impl'
     daoPath 'dao'
+}
+
+apiDoc {
+    controllerPath 'controller'
 }
 
 group 'org.breeze.work'
@@ -54,7 +59,7 @@ uploadArchives {
     repositories {
         mavenDeployer {
             pom.groupId = 'org.breeze.work'
-            pom.artifactId = 'generateCode'
+            pom.artifactId = 'gradle-plugins'
             pom.version = '1.0'
             repository(url: uri('./repo'))
         }
@@ -63,5 +68,9 @@ uploadArchives {
 
 // 指定编码
 tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+
+tasks.javadoc() {
     options.encoding = "UTF-8"
 }
