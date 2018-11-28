@@ -79,12 +79,7 @@ public class GenerateCodeTask extends DefaultTask {
                 }
                 column.setDefaultValue(columnResultSet.getString(5));
                 column.setExtra(columnResultSet.getString(6));
-//                        String getColumnCommentSql = "SELECT COLUMN_COMMENT FROM INFORMATION_SCHEMA.Columns where table_name='" + tableName + "' AND COLUMN_NAME='" + columnName + "'";
-//                        preparedStatement = connection.prepareStatement(getColumnCommentSql);
-//                        ResultSet columnCommentResultSet = preparedStatement.executeQuery();
-//                        while (columnCommentResultSet.next()) {
                 column.setColumnComment(columnResultSet.getString(7));
-//                        }
                 columnList.add(column);
             }
             table.setColumnList(columnList);
@@ -116,36 +111,16 @@ public class GenerateCodeTask extends DefaultTask {
         System.out.println("准备生成文件......");
         tableList.forEach(each -> {
             String tableName = this.getUpCaseTableName(each.getTableName());
-//            if (entityPath != null) {
             String entityContent = this.getEntityContent(each, entityPath);
             this.doAction(rootDirPath, entityPath, entityContent, tableName);
-//            } else {
-//                System.out.println("Need entityPath");
-//            }
-//            if (controllerPath != null) {
             String controllerContent = this.getControllerContent(each, controllerPath, entityPath, servicePath);
             this.doAction(rootDirPath, controllerPath, controllerContent, tableName + "Controller");
-//            } else {
-//                System.out.println("Need controllerPath");
-//            }
-//            if (servicePath != null) {
             String serviceContent = this.getServiceContent(each, servicePath, entityPath);
             this.doAction(rootDirPath, servicePath, serviceContent, tableName + "Service");
-//            } else {
-//                System.out.println("Need servicePath");
-//            }
-//            if (serviceImplPath != null) {
             String serviceImplContent = this.getServiceImplContent(each, serviceImplPath, daoPath, entityPath, servicePath);
             this.doAction(rootDirPath, serviceImplPath, serviceImplContent, tableName + "ServiceImpl");
-//            } else {
-//                System.out.println("Need serviceImplPath");
-//            }
-//            if (daoPath != null) {
             String daoContent = this.getDaoContent(each, daoPath, entityPath);
             this.doAction(rootDirPath, daoPath, daoContent, tableName + "Dao");
-//            } else {
-//                System.out.println("Need daoPath");
-//            }
         });
     }
 

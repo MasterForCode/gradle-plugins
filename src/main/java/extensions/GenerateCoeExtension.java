@@ -9,11 +9,11 @@ public class GenerateCoeExtension {
     private String dataBase;
     private String user;
     private String password;
-    private String entityPath;
-    private String controllerPath;
-    private String servicePath;
-    private String serviceImplPath;
-    private String daoPath;
+    private String entityPath = "entity";
+    private String controllerPath = "controller";
+    private String servicePath = "service";
+    private String serviceImplPath = "service.impl";
+    private String daoPath = "dao";
 
     public String getEntityPath() {
         return entityPath;
