@@ -1,0 +1,67 @@
+buildscript {
+    repositories {
+        maven {
+            url uri('./repo')
+        }
+    }
+    dependencies {
+        classpath 'org.breeze.work:generateCode:1.0'
+    }
+}
+
+plugins {
+    id 'groovy'
+    id 'java'
+    id 'maven'
+}
+
+// 只能这样写
+apply plugin: 'generateCode'
+
+generateCode {
+    host '192.168.88.23'
+    port '3306'
+    dataBase 'meta_dc'
+    user 'root'
+    password 'libsys'
+    entityPath 'entity'
+    controllerPath 'controller'
+    servicePath 'service'
+    serviceImplPath 'service.impl'
+    daoPath 'dao'
+}
+
+group 'org.breeze.work'
+version '1.0'
+
+sourceCompatibility = 1.8
+
+repositories {
+    maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+    maven{ url 'http://maven.aliyun.com/nexus/content/repositories/jcenter'}
+}
+
+dependencies {
+    compile gradleApi()
+    compile localGroovy()
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.13'
+
+
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            pom.groupId = 'org.breeze.work'
+            pom.artifactId = 'generateCode'
+            pom.version = '1.0'
+            repository(url: uri('./repo'))
+        }
+    }
+}
+
+// 指定编码
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
