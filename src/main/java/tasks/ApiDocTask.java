@@ -24,7 +24,6 @@ public class ApiDocTask extends DefaultTask {
 
     private final File rootDir = project.getRootDir();
 
-    private final String controllerRequestMethodPattern = "@[a-zA-Z]*Controller";
 
     @TaskAction
     void apiDoc() {
@@ -48,11 +47,25 @@ public class ApiDocTask extends DefaultTask {
         controllerDoc.setControllerName(fileName);
         String stringFile = this.file2String(file);
         if (stringFile != null) {
-            Pattern pattern = Pattern.compile(controllerRequestMethodPattern);
-            Matcher matcher = pattern.matcher(stringFile);
-            while (matcher.find()) {
+            Pattern pattern;
+            Matcher matcher;
+            pattern = Pattern.compile(ControllerDoc.controllerRequestMethodPattern);
+            matcher = pattern.matcher(stringFile);
+            if (matcher.find()) {
                 System.out.println("............." + matcher.group());
             }
+            pattern = Pattern.compile(ControllerDoc.controllerRequestMappingPattern);
+            matcher = pattern.matcher(stringFile);
+            if (matcher.find()){ // 取第一个匹配的
+                System.out.println("-------------------" + matcher.group());
+            }
+            pattern = Pattern.compile(ControllerDoc.controllerAnnotationPattern);
+            matcher = pattern.matcher(stringFile);
+            System.out.println("/////////////");
+            if (matcher.find()){ // 取第一个匹配的
+                System.out.println("-----------------------**************--------" + matcher.group());
+            }
+
         } else {
             System.out.println(fileName + "is empty");
         }

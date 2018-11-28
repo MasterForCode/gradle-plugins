@@ -16,15 +16,18 @@ plugins {
 }
 
 // 只能这样写
+// 指定properties文件，该文件内部实现类指定插件名
 apply plugin: 'generateCode'
 apply plugin: 'apiDoc'
+apply plugin: 'delete'
+apply plugin: 'help'
 
 generateCode {
-    host '192.168.88.23'
+//    host '192.168.88.23'
     port '3306'
-    dataBase 'meta_dc'
+    dataBase 'account'
     user 'root'
-    password 'libsys'
+    password 'wangBin_123'
     entityPath 'entity'
     controllerPath 'controller'
     servicePath 'service'

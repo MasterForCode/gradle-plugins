@@ -11,6 +11,9 @@ public class ControllerDoc {
     private String controllerRequestMapping;
     private String controllerAnnotation;
     private List<MethodDoc> methodDocList;
+    public static final String controllerRequestMethodPattern = "@[a-zA-Z]*Controller";
+    public static final String controllerRequestMappingPattern = "@RequestMapping(.*)";
+    public static final String controllerAnnotationPattern = "/[\\s\\S]*/\\n";
 
     public String getControllerName() {
         return controllerName;
