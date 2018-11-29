@@ -11,6 +11,6 @@ import org.gradle.api.Project;
 public class HelpPlugin implements Plugin<Project> {
     @Override
     public void apply(Project project) {
-        project.getTasks().create("help").mustRunAfter("apiDoc").mustRunAfter("generateCode").mustRunAfter("uploadArchives").mustRunAfter("delete");
+        project.getTasks().create("myHelp").mustRunAfter("apiDoc").mustRunAfter("generateCode").mustRunAfter("uploadArchives").mustRunAfter("delete");
     }
 }
