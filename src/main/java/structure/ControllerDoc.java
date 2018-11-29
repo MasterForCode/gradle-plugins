@@ -13,7 +13,7 @@ public class ControllerDoc {
     private List<MethodDoc> methodDocList;
     public static final String controllerRequestMethodPattern = "@[a-zA-Z]*Controller";
     public static final String controllerRequestMappingPattern = "@RequestMapping(.*)";
-    public static final String controllerAnnotationPattern = "/[\\s\\S]*/\\n";
+    public static final String controllerAnnotationPattern = "/[\\s\\S]*/[\\s]+";
 
     public String getControllerName() {
         return controllerName;
