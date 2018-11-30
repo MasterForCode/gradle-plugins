@@ -1,5 +1,6 @@
 package plugins;
 
+import common.Const;
 import extensions.ApiDocExtension;
 import extensions.GenerateCoeExtension;
 import org.gradle.api.NonNullApi;
@@ -14,7 +15,7 @@ import tasks.ApiDocTask;
 public class ApiDocPlugin implements Plugin<Project> {
     @Override
     public void apply(Project project) {
-        project.getExtensions().create("apiDoc", ApiDocExtension.class);
-        project.getTasks().create("apiDoc", ApiDocTask.class);
+        project.getExtensions().create(Const.EXTENSION_APIDOC_NAME, ApiDocExtension.class);
+        project.getTasks().create(Const.TASK_APIDOC_NAME, ApiDocTask.class).setGroup(Const.TASK_GROUP);
     }
 }

@@ -1,8 +1,10 @@
 package plugins;
 
+import common.Const;
 import org.gradle.api.NonNullApi;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import tasks.HelpTask;
 
 /**
  * Created by wb on 2018/11/28.
@@ -11,6 +13,6 @@ import org.gradle.api.Project;
 public class HelpPlugin implements Plugin<Project> {
     @Override
     public void apply(Project project) {
-        project.getTasks().create("myHelp").mustRunAfter("apiDoc").mustRunAfter("generateCode").mustRunAfter("uploadArchives").mustRunAfter("delete");
+        project.getTasks().create(Const.TASK_HELP_NAME, HelpTask.class).setGroup(Const.TASK_GROUP);
     }
 }

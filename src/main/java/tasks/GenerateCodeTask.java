@@ -1,5 +1,6 @@
 package tasks;
 
+import common.Const;
 import extensions.GenerateCoeExtension;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
@@ -24,7 +25,7 @@ public class GenerateCodeTask extends DefaultTask {
 
     private final Project project = getProject();
 
-    private final GenerateCoeExtension generateCoeExtension = (GenerateCoeExtension) project.getExtensions().getByName("generateCode");
+    private final GenerateCoeExtension generateCoeExtension = (GenerateCoeExtension) project.getExtensions().getByName(Const.EXTENSION_GENERATECODE_NAME);
 
 
     @TaskAction

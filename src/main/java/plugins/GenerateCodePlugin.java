@@ -1,5 +1,6 @@
 package plugins;
 
+import common.Const;
 import extensions.GenerateCoeExtension;
 import tasks.GenerateCodeTask;
 import org.gradle.api.NonNullApi;
@@ -13,7 +14,7 @@ import org.gradle.api.Project;
 public class GenerateCodePlugin implements Plugin<Project> {
     @Override
     public void apply(Project project) {
-        project.getExtensions().create("generateCode", GenerateCoeExtension.class);
-        project.getTasks().create("generateCode", GenerateCodeTask.class);
+        project.getExtensions().create(Const.EXTENSION_GENERATECODE_NAME, GenerateCoeExtension.class);
+        project.getTasks().create(Const.TASK_GENERATECODE_NAME, GenerateCodeTask.class).setGroup(Const.TASK_GROUP);
     }
 }

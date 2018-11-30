@@ -1,5 +1,6 @@
 package tasks;
 
+import common.Const;
 import extensions.ApiDocExtension;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
@@ -20,7 +21,7 @@ import java.util.regex.Pattern;
 public class ApiDocTask extends DefaultTask {
     private final Project project = getProject();
 
-    private final ApiDocExtension apiDocExtension = (ApiDocExtension) project.getExtensions().getByName("apiDoc");
+    private final ApiDocExtension apiDocExtension = (ApiDocExtension) project.getExtensions().getByName(Const.EXTENSION_APIDOC_NAME);
 
     private final File rootDir = project.getRootDir();
 
@@ -52,18 +53,17 @@ public class ApiDocTask extends DefaultTask {
             pattern = Pattern.compile(ControllerDoc.controllerRequestMethodPattern);
             matcher = pattern.matcher(stringFile);
             if (matcher.find()) {
-                System.out.println("............." + matcher.group());
+                System.out.println("." + matcher.group());
             }
             pattern = Pattern.compile(ControllerDoc.controllerRequestMappingPattern);
             matcher = pattern.matcher(stringFile);
             if (matcher.find()){ // 取第一个匹配的
-                System.out.println("-------------------" + matcher.group());
+                System.out.println("--" + matcher.group());
             }
             pattern = Pattern.compile(ControllerDoc.controllerAnnotationPattern);
             matcher = pattern.matcher(stringFile);
-            System.out.println("/////////////");
             if (matcher.find()){ // 取第一个匹配的
-                System.out.println("-----------------------**************--------" + matcher.group());
+                System.out.println("-" + matcher.group());
             }
 
         } else {
@@ -98,13 +98,11 @@ public class ApiDocTask extends DefaultTask {
         for (String aStringList : stringList) {
             path.append(File.separator).append(aStringList);
         }
-        System.out.println("------------" + path.toString());
         return path.toString();
     }
 
     private String getFileName(File file) {
         String fullFileName = file.getName();
-        System.out.println("-------------------" + fullFileName);
         List<String> stringList = Arrays.asList(fullFileName.split("\\."));
         StringBuilder fileName = new StringBuilder();
         for (int i = 0; i < stringList.size() - 1; i++) {
