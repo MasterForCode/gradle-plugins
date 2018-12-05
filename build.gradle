@@ -45,6 +45,10 @@ del {
 //    suffix 't'
 }
 
+b_help{
+    id 'generateCode' 
+}
+
 group 'org.breeze.work'
 version '1.0'
 
