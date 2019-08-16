@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  * Created by wb on 2018/11/26.
  */
 public class GenerateCodeTask extends DefaultTask {
-    private static final String separator = System.getProperty("line.separator");
+    private static final String SEPARATOR = System.getProperty("line.separator");
 
     private final Project project = getProject();
 
@@ -43,6 +43,10 @@ public class GenerateCodeTask extends DefaultTask {
         Connection connection = DriverManager.getConnection(url, user, password);
         List<Table> tableList = this.getStructure(connection);
         System.out.println("获得所有表结构......");
+        if (generateCoeExtension.getTableNames().size() > 0) {
+            System.out.println("获得指定表结构......");
+            tableList = tableList.stream().filter(each -> generateCoeExtension.getTableNames().contains(each.getTableName())).collect(Collectors.toList());
+        }
         this.createFile(tableList);
         System.out.println("执行成功......");
     }
@@ -131,12 +135,12 @@ public class GenerateCodeTask extends DefaultTask {
 
         String entityContent = "";
         // package
-        entityContent += "package " + entityPath + ";" + separator + separator;
+        entityContent += "package " + entityPath + ";" + SEPARATOR + SEPARATOR;
         // import
-        entityContent += "import lombok.Builder;" + separator;
-        entityContent += "import lombok.Data;" + separator + separator;
-        entityContent += "import javax.persistence.Entity;" + separator;
-        entityContent += "import javax.persistence.Table;" + separator;
+        entityContent += "import lombok.Builder;" + SEPARATOR;
+        entityContent += "import lombok.Data;" + SEPARATOR + SEPARATOR;
+        entityContent += "import javax.persistence.Entity;" + SEPARATOR;
+        entityContent += "import javax.persistence.Table;" + SEPARATOR;
         boolean isAutoIncrement = false;
         boolean isId = false;
         for (Column column : columnList) {
@@ -148,21 +152,21 @@ public class GenerateCodeTask extends DefaultTask {
             }
         }
         if (isId) {
-            entityContent += "import javax.persistence.Id;" + separator;
+            entityContent += "import javax.persistence.Id;" + SEPARATOR;
         }
         if (isAutoIncrement) {
-            entityContent += "import javax.persistence.GeneratedValue;" + separator + separator;
+            entityContent += "import javax.persistence.GeneratedValue;" + SEPARATOR + SEPARATOR;
         }
         // 注释
-        entityContent += "/**" + separator;
-        entityContent += "* " + table.getTableComment() + separator;
-        entityContent += "*/" + separator;
+        entityContent += "/**" + SEPARATOR;
+        entityContent += "* " + table.getTableComment() + SEPARATOR;
+        entityContent += "*/" + SEPARATOR;
         // 注解
-        entityContent += "@Data" + separator;
-        entityContent += "@Entity" + separator;
-        entityContent += "@Table(name = \"" + tableName + "\")" + separator + separator;
+        entityContent += "@Data" + SEPARATOR;
+        entityContent += "@Entity" + SEPARATOR;
+        entityContent += "@Table(name = \"" + tableName + "\")" + SEPARATOR + SEPARATOR;
         // class
-        entityContent += "public class " + this.getUpCaseTableName(tableName) + " {" + separator;
+        entityContent += "public class " + this.getUpCaseTableName(tableName) + " {" + SEPARATOR;
         // field
         entityContent += this.getEntityFiledContent(columnList);
         entityContent += "}";
@@ -185,16 +189,16 @@ public class GenerateCodeTask extends DefaultTask {
         for (Column column : columnList) {
             if (column.getExtra().equalsIgnoreCase("auto_increment")) {
                 fieldContent.append("    ");
-                fieldContent.append("@Id").append(separator);
+                fieldContent.append("@Id").append(SEPARATOR);
                 fieldContent.append("    ");
-                fieldContent.append("@GeneratedValue").append(separator);
+                fieldContent.append("@GeneratedValue").append(SEPARATOR);
             }
             fieldContent.append("    ").append("private").append(" ").append(column.getColumnType()).append(" ").append(this.getJavaColumnName(column.getColumnName()));
             String defaultValue = column.getDefaultValue();
             if (defaultValue != null && !defaultValue.equals("")) {
                 fieldContent.append(" = ").append(defaultValue);
             }
-            fieldContent.append(";").append(separator);
+            fieldContent.append(";").append(SEPARATOR);
         }
         return fieldContent.toString();
     }
@@ -232,18 +236,18 @@ public class GenerateCodeTask extends DefaultTask {
             }
         }
         // package
-        controllerContent += "package " + controllerPath + ";" + separator + separator;
+        controllerContent += "package " + controllerPath + ";" + SEPARATOR + SEPARATOR;
         // import
-        controllerContent += "import org.springframework.beans.factory.annotation.Autowired;" + separator;
-        controllerContent += "import org.springframework.web.bind.annotation.*;" + separator;
-        controllerContent += "import " + entityPath + "." + upCaseTableName + ";" + separator;
-        controllerContent += "import " + servicePath + "." + serviceName + ";" + separator + separator;
-        controllerContent += "import java.util.List;" + separator + separator;
+        controllerContent += "import org.springframework.beans.factory.annotation.Autowired;" + SEPARATOR;
+        controllerContent += "import org.springframework.web.bind.annotation.*;" + SEPARATOR;
+        controllerContent += "import " + entityPath + "." + upCaseTableName + ";" + SEPARATOR;
+        controllerContent += "import " + servicePath + "." + serviceName + ";" + SEPARATOR + SEPARATOR;
+        controllerContent += "import java.util.List;" + SEPARATOR + SEPARATOR;
         // 注解
-        controllerContent += "@RestController" + separator;
-        controllerContent += "@RequestMapping(value = \"/" + upCaseTableName + "\")" + separator;
+        controllerContent += "@RestController" + SEPARATOR;
+        controllerContent += "@RequestMapping(value = \"/" + upCaseTableName + "\")" + SEPARATOR;
         // controller
-        controllerContent += "public class " + controllerName + " {" + separator;
+        controllerContent += "public class " + controllerName + " {" + SEPARATOR;
         controllerContent += this.getControllerMethodContent(upCaseTableName, javaPrimaryName, primaryType, controllerName, serviceName);
         controllerContent += "}";
         return controllerContent;
@@ -252,38 +256,38 @@ public class GenerateCodeTask extends DefaultTask {
     private String getControllerMethodContent(String tableName, String javaPrimaryName, String primaryType, String controllerName, String serviceName) {
         String lowerCaseServiceName = this.first2LowerCase(serviceName);
         String lowerCaseTableName = this.first2LowerCase(tableName);
-        String closeMethodContent = "    }" + separator + separator;
+        String closeMethodContent = "    }" + SEPARATOR + SEPARATOR;
         String methodContent = "";
         // Construct
-        methodContent += "    " + "private final " + serviceName + " " + lowerCaseServiceName + ";" + separator + separator;
-        methodContent += "    " + "@Autowired" + separator;
-        methodContent += "    " + "public " + controllerName + "(" + serviceName + " " + lowerCaseServiceName + ") {" + separator;
-        methodContent += "        " + "this." + lowerCaseServiceName + " = " + lowerCaseServiceName + ";" + separator;
+        methodContent += "    " + "private final " + serviceName + " " + lowerCaseServiceName + ";" + SEPARATOR + SEPARATOR;
+        methodContent += "    " + "@Autowired" + SEPARATOR;
+        methodContent += "    " + "public " + controllerName + "(" + serviceName + " " + lowerCaseServiceName + ") {" + SEPARATOR;
+        methodContent += "        " + "this." + lowerCaseServiceName + " = " + lowerCaseServiceName + ";" + SEPARATOR;
         methodContent += closeMethodContent;
         // Get findAll
-        methodContent += "    @GetMapping(value = \"/\")" + separator;
-        methodContent += "    public List<" + tableName + ">" + " findAll() {" + separator;
-        methodContent += "        return this." + lowerCaseServiceName + ".findAll();" + separator;
+        methodContent += "    @GetMapping(value = \"/\")" + SEPARATOR;
+        methodContent += "    public List<" + tableName + ">" + " findAll() {" + SEPARATOR;
+        methodContent += "        return this." + lowerCaseServiceName + ".findAll();" + SEPARATOR;
         methodContent += closeMethodContent;
         // Get findById
-        methodContent += "    @GetMapping(value = \"/{" + javaPrimaryName + "}\")" + separator;
-        methodContent += "    public " + tableName + " findById(@PathVariable(name = \"" + javaPrimaryName + "\") " + primaryType + " " + javaPrimaryName + ") {" + separator;
-        methodContent += "        return this." + lowerCaseServiceName + ".findById(" + javaPrimaryName + ");" + separator;
+        methodContent += "    @GetMapping(value = \"/{" + javaPrimaryName + "}\")" + SEPARATOR;
+        methodContent += "    public " + tableName + " findById(@PathVariable(name = \"" + javaPrimaryName + "\") " + primaryType + " " + javaPrimaryName + ") {" + SEPARATOR;
+        methodContent += "        return this." + lowerCaseServiceName + ".findById(" + javaPrimaryName + ");" + SEPARATOR;
         methodContent += closeMethodContent;
         // Post addOne
-        methodContent += "    @PostMapping(value = \"/\")" + separator;
-        methodContent += "    public " + tableName + " addOne(@RequestBody " + tableName + " " + lowerCaseTableName + ") {" + separator;
-        methodContent += "        return this." + lowerCaseServiceName + ".addOne(" + lowerCaseTableName + ");" + separator;
+        methodContent += "    @PostMapping(value = \"/\")" + SEPARATOR;
+        methodContent += "    public " + tableName + " addOne(@RequestBody " + tableName + " " + lowerCaseTableName + ") {" + SEPARATOR;
+        methodContent += "        return this." + lowerCaseServiceName + ".addOne(" + lowerCaseTableName + ");" + SEPARATOR;
         methodContent += closeMethodContent;
         // Put updateOne
-        methodContent += "    @PutMapping(value = \"/\")" + separator;
-        methodContent += "    public " + tableName + "updateOne(@RequestBody " + tableName + " " + lowerCaseTableName + ") {" + separator;
-        methodContent += "        return this." + lowerCaseServiceName + ".updateOne(" + lowerCaseTableName + ");" + separator;
+        methodContent += "    @PutMapping(value = \"/\")" + SEPARATOR;
+        methodContent += "    public " + tableName + "updateOne(@RequestBody " + tableName + " " + lowerCaseTableName + ") {" + SEPARATOR;
+        methodContent += "        return this." + lowerCaseServiceName + ".updateOne(" + lowerCaseTableName + ");" + SEPARATOR;
         methodContent += closeMethodContent;
         // Delete deleteOne
-        methodContent += "    @DeleteMapping(value = \"/{" + javaPrimaryName + "}\")" + separator;
-        methodContent += "    public " + tableName + " deleteById(@PathVariable(name = \"" + javaPrimaryName + "\") " + primaryType + " " + javaPrimaryName + ") {" + separator;
-        methodContent += "        return this." + lowerCaseServiceName + ".deleteById(" + javaPrimaryName + ");" + separator;
+        methodContent += "    @DeleteMapping(value = \"/{" + javaPrimaryName + "}\")" + SEPARATOR;
+        methodContent += "    public " + tableName + " deleteById(@PathVariable(name = \"" + javaPrimaryName + "\") " + primaryType + " " + javaPrimaryName + ") {" + SEPARATOR;
+        methodContent += "        return this." + lowerCaseServiceName + ".deleteById(" + javaPrimaryName + ");" + SEPARATOR;
         methodContent += closeMethodContent;
         return methodContent;
     }
@@ -300,12 +304,12 @@ public class GenerateCodeTask extends DefaultTask {
             }
         }
         // package
-        serviceContent += "package " + servicePath + ";" + separator + separator;
+        serviceContent += "package " + servicePath + ";" + SEPARATOR + SEPARATOR;
         // import
-        serviceContent += "import " + entityPath + "." + tableName + ";" + separator + separator;
-        serviceContent += "import java.util.List;" + separator + separator;
+        serviceContent += "import " + entityPath + "." + tableName + ";" + SEPARATOR + SEPARATOR;
+        serviceContent += "import java.util.List;" + SEPARATOR + SEPARATOR;
         // service
-        serviceContent += "public interface " + tableName + "Service {" + separator;
+        serviceContent += "public interface " + tableName + "Service {" + SEPARATOR;
         serviceContent += this.getServiceMethodContent(tableName, primaryName, primaryType);
         serviceContent += "}";
 
@@ -315,11 +319,11 @@ public class GenerateCodeTask extends DefaultTask {
     private String getServiceMethodContent(String tableName, String primaryName, String primaryType) {
         String lowerCaseTableName = this.first2LowerCase(tableName);
         String methodContent = "";
-        methodContent += "    List<" + tableName + "> findAll();" + separator + separator;
-        methodContent += "    " + tableName + " findById(" + primaryType + " " + primaryName + ");" + separator + separator;
-        methodContent += "    " + tableName + " addOne(" + tableName + " " + lowerCaseTableName + ");" + separator + separator;
-        methodContent += "    " + tableName + " updateOne(" + tableName + " " + lowerCaseTableName + ");" + separator + separator;
-        methodContent += "    void deleteById(" + primaryType + " " + primaryName + ");" + separator;
+        methodContent += "    List<" + tableName + "> findAll();" + SEPARATOR + SEPARATOR;
+        methodContent += "    " + tableName + " findById(" + primaryType + " " + primaryName + ");" + SEPARATOR + SEPARATOR;
+        methodContent += "    " + tableName + " addOne(" + tableName + " " + lowerCaseTableName + ");" + SEPARATOR + SEPARATOR;
+        methodContent += "    " + tableName + " updateOne(" + tableName + " " + lowerCaseTableName + ");" + SEPARATOR + SEPARATOR;
+        methodContent += "    void deleteById(" + primaryType + " " + primaryName + ");" + SEPARATOR;
         return methodContent;
     }
 
@@ -335,23 +339,23 @@ public class GenerateCodeTask extends DefaultTask {
             }
         }
         // package
-        serviceImplContent += "package " + serviceImplPath + ";" + separator + separator;
+        serviceImplContent += "package " + serviceImplPath + ";" + SEPARATOR + SEPARATOR;
         // import
-        serviceImplContent += "import org.springframework.beans.factory.annotation.Autowired;" + separator;
-        serviceImplContent += "import org.springframework.stereotype.Service;" + separator;
-        serviceImplContent += "import " + daoPath + "." + tableName + "Dao;" + separator;
-        serviceImplContent += "import " + entityPath + "." + tableName + ";" + separator;
-        serviceImplContent += "import " + servicePath + "." + tableName + "Service;" + separator + separator;
-        serviceImplContent += " import java.util.List;" + separator + separator;
+        serviceImplContent += "import org.springframework.beans.factory.annotation.Autowired;" + SEPARATOR;
+        serviceImplContent += "import org.springframework.stereotype.Service;" + SEPARATOR;
+        serviceImplContent += "import " + daoPath + "." + tableName + "Dao;" + SEPARATOR;
+        serviceImplContent += "import " + entityPath + "." + tableName + ";" + SEPARATOR;
+        serviceImplContent += "import " + servicePath + "." + tableName + "Service;" + SEPARATOR + SEPARATOR;
+        serviceImplContent += " import java.util.List;" + SEPARATOR + SEPARATOR;
         // 注解
-        serviceImplContent += "@Service" + separator;
+        serviceImplContent += "@Service" + SEPARATOR;
         // serviceImpl
-        serviceImplContent += "public class " + tableName + "ServiceImpl implements " + tableName + "Service {" + separator;
-        serviceImplContent += "    private final " + tableName + "Dao " + this.first2LowerCase(tableName) + "Dao;" + separator + separator;
-        serviceImplContent += "    @Autowired" + separator;
-        serviceImplContent += "    public " + tableName + "ServiceImpl(" + tableName + "Dao" + " " + this.first2LowerCase(tableName) + "Dao) {" + separator;
-        serviceImplContent += "        this." + this.first2LowerCase(tableName) + "Dao" + " = " + this.first2LowerCase(tableName) + "Dao;" + separator;
-        serviceImplContent += "    }" + separator + separator;
+        serviceImplContent += "public class " + tableName + "ServiceImpl implements " + tableName + "Service {" + SEPARATOR;
+        serviceImplContent += "    private final " + tableName + "Dao " + this.first2LowerCase(tableName) + "Dao;" + SEPARATOR + SEPARATOR;
+        serviceImplContent += "    @Autowired" + SEPARATOR;
+        serviceImplContent += "    public " + tableName + "ServiceImpl(" + tableName + "Dao" + " " + this.first2LowerCase(tableName) + "Dao) {" + SEPARATOR;
+        serviceImplContent += "        this." + this.first2LowerCase(tableName) + "Dao" + " = " + this.first2LowerCase(tableName) + "Dao;" + SEPARATOR;
+        serviceImplContent += "    }" + SEPARATOR + SEPARATOR;
         serviceImplContent += this.getServiceImplMethodContent(tableName, primaryName, primaryType);
         serviceImplContent += "}";
         return serviceImplContent;
@@ -361,33 +365,33 @@ public class GenerateCodeTask extends DefaultTask {
         String daoName = tableName + "Dao";
         String lowerCaseDaoName = this.first2LowerCase(daoName);
         String lowerCaseTableName = this.first2LowerCase(tableName);
-        String overrideContent = "    @Override" + separator;
-        String closeMethodContent = "    }" + separator + separator;
+        String overrideContent = "    @Override" + SEPARATOR;
+        String closeMethodContent = "    }" + SEPARATOR + SEPARATOR;
         String methodContent = "";
         // findAll
         methodContent += overrideContent;
-        methodContent += "    public List<" + tableName + "> findAll() {" + separator;
-        methodContent += "        return this." + lowerCaseDaoName + ".findAll();" + separator;
+        methodContent += "    public List<" + tableName + "> findAll() {" + SEPARATOR;
+        methodContent += "        return this." + lowerCaseDaoName + ".findAll();" + SEPARATOR;
         methodContent += closeMethodContent;
         // findById
         methodContent += overrideContent;
-        methodContent += "    public List<" + tableName + "> findById(" + primaryType + " " + primaryName + ") {" + separator;
-        methodContent += "        return this." + lowerCaseDaoName + ".findById(" + primaryName + ")" + ".orElse(null);" + separator;
+        methodContent += "    public List<" + tableName + "> findById(" + primaryType + " " + primaryName + ") {" + SEPARATOR;
+        methodContent += "        return this." + lowerCaseDaoName + ".findById(" + primaryName + ")" + ".orElse(null);" + SEPARATOR;
         methodContent += closeMethodContent;
         // addOne
         methodContent += overrideContent;
-        methodContent += "    public " + tableName + " addOne(" + tableName + " " + lowerCaseTableName + ") {" + separator;
-        methodContent += "        return this." + lowerCaseDaoName + ".save(" + lowerCaseTableName + ");" + separator;
+        methodContent += "    public " + tableName + " addOne(" + tableName + " " + lowerCaseTableName + ") {" + SEPARATOR;
+        methodContent += "        return this." + lowerCaseDaoName + ".save(" + lowerCaseTableName + ");" + SEPARATOR;
         methodContent += closeMethodContent;
         // updateOne
         methodContent += overrideContent;
-        methodContent += "    public " + tableName + " updateOne(" + tableName + " " + lowerCaseTableName + ") {" + separator;
-        methodContent += "        return this." + lowerCaseDaoName + ".save(" + lowerCaseTableName + ");" + separator;
+        methodContent += "    public " + tableName + " updateOne(" + tableName + " " + lowerCaseTableName + ") {" + SEPARATOR;
+        methodContent += "        return this." + lowerCaseDaoName + ".save(" + lowerCaseTableName + ");" + SEPARATOR;
         methodContent += closeMethodContent;
         // deleteById
         methodContent += overrideContent;
-        methodContent += "    public void deleteById(" + primaryType + " " + primaryName + ") {" + separator;
-        methodContent += "        this." + lowerCaseDaoName + ".deleteById(" + primaryName + ");" + separator;
+        methodContent += "    public void deleteById(" + primaryType + " " + primaryName + ") {" + SEPARATOR;
+        methodContent += "        this." + lowerCaseDaoName + ".deleteById(" + primaryName + ");" + SEPARATOR;
         methodContent += closeMethodContent;
         return methodContent;
     }
@@ -402,12 +406,12 @@ public class GenerateCodeTask extends DefaultTask {
             }
         }
         // package
-        daoContent += "package " + daoPath + ";" + separator + separator;
+        daoContent += "package " + daoPath + ";" + SEPARATOR + SEPARATOR;
         // import
-        daoContent += "import org.springframework.data.jpa.repository.JpaRepository;" + separator;
-        daoContent += "import " + entityPath + "." + tableName + ";" + separator + separator;
+        daoContent += "import org.springframework.data.jpa.repository.JpaRepository;" + SEPARATOR;
+        daoContent += "import " + entityPath + "." + tableName + ";" + SEPARATOR + SEPARATOR;
         // controller
-        daoContent += "public interface " + tableName + "Dao" + " extends " + "JpaRepository<" + tableName + ", " + primaryType + "> {" + separator;
+        daoContent += "public interface " + tableName + "Dao" + " extends " + "JpaRepository<" + tableName + ", " + primaryType + "> {" + SEPARATOR;
         daoContent += "}";
 
         return daoContent;

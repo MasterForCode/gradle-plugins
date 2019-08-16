@@ -35,12 +35,11 @@ public class DeleteTask extends DefaultTask {
             }
 
         }
-        String files = deleteExtension.getFiles();
+        List<String> files = deleteExtension.getFiles();
         String suffix = deleteExtension.getSuffix();
         List<String> fileNameList = new ArrayList<>();
         if (files != null) {
-            String[] stringList = files.split(",");
-            for (String str : stringList) {
+            for (String str : files) {
                 if (suffix != null) {
                     fileNameList.add(str + "." + suffix);
                 } else {

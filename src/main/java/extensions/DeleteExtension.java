@@ -2,13 +2,15 @@ package extensions;
 
 import org.gradle.api.Incubating;
 
+import java.util.List;
+
 /**
  * Created by wb on 2018/11/30.
  */
 @Incubating
 public class DeleteExtension {
     private String directories;
-    private String files;
+    private List<String> files;
     private String suffix;
 
     public String getDirectories() {
@@ -19,11 +21,11 @@ public class DeleteExtension {
         this.directories = directories;
     }
 
-    public String getFiles() {
+    public List<String> getFiles() {
         return files;
     }
 
-    public void setFiles(String files) {
+    public void setFiles(List<String> files) {
         this.files = files;
     }
 

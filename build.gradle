@@ -18,16 +18,17 @@ plugins {
 // 只能这样写
 // 指定properties文件，该文件内部实现类指定插件名
 apply plugin: 'generateCode'
-apply plugin: 'apiDoc'
+//apply plugin: 'apiDoc'
 apply plugin: 'delete'
 apply plugin: 'help'
 
 generateCode {
-//    host '192.168.88.23'
+    host '192.168.88.13'
     port '3306'
-    dataBase 'world'
-    user 'root'
-    password 'wangbin_123'
+    dataBase 'meta_sandbox'
+    user 'meta_res'
+    password 'libsys'
+    tableNames = ['allocate_detl']
     entityPath 'entity'
     controllerPath 'controller'
     servicePath 'service'
@@ -35,18 +36,18 @@ generateCode {
     daoPath 'dao'
 }
 
-apiDoc {
-    controllerPath 'controller'
-}
+//apiDoc {
+//    controllerPath 'controller'
+//}
 
 del {
-//    files 'CityController'
+//    files  = ['AllocateDetlController', 'AnalysisCustomTemplateController']
     directories 'entity,  controller, service, dao'
 //    suffix 't'
 }
 
 b_help{
-    id 'generateCode' 
+    id 'del'
 }
 
 group 'org.breeze.work'
@@ -60,6 +61,15 @@ repositories {
     mavenCentral()
     jcenter()
 }
+
+install {
+    repositories.mavenInstaller {
+        pom.version =  project.version
+        pom.artifactId = 'breeze'
+        pom.groupId = project.group
+    }
+}
+
 
 dependencies {
     compile gradleApi()

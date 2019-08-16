@@ -1,5 +1,8 @@
 package extensions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by wb on 2018/11/26.
  */
@@ -9,11 +12,60 @@ public class GenerateCoeExtension {
     private String dataBase;
     private String user;
     private String password;
+    private List<String> tableNames = new ArrayList<>();
     private String entityPath = "entity";
     private String controllerPath = "controller";
     private String servicePath = "service";
     private String serviceImplPath = "service.impl";
     private String daoPath = "dao";
+
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    public String getPort() {
+        return port;
+    }
+
+    public void setPort(String port) {
+        this.port = port;
+    }
+
+    public String getDataBase() {
+        return dataBase;
+    }
+
+    public void setDataBase(String dataBase) {
+        this.dataBase = dataBase;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public List<String> getTableNames() {
+        return tableNames;
+    }
+
+    public void setTableNames(List<String> tableNames) {
+        this.tableNames = tableNames;
+    }
 
     public String getEntityPath() {
         return entityPath;
@@ -53,45 +105,5 @@ public class GenerateCoeExtension {
 
     public void setDaoPath(String daoPath) {
         this.daoPath = daoPath;
-    }
-
-    public String getHost() {
-        return host;
-    }
-
-    public void setHost(String host) {
-        this.host = host;
-    }
-
-    public String getUser() {
-        return user;
-    }
-
-    public void setUser(String user) {
-        this.user = user;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getDataBase() {
-        return dataBase;
-    }
-
-    public void setDataBase(String dataBase) {
-        this.dataBase = dataBase;
-    }
-
-    public String getPort() {
-        return port;
-    }
-
-    public void setPort(String port) {
-        this.port = port;
     }
 }
