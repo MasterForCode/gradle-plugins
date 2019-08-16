@@ -5,7 +5,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'org.breeze.work:gradle-plugins:1.0'
+        classpath 'org.soliloquize:gradle-plugins:1.0'
     }
 }
 
@@ -20,7 +20,7 @@ plugins {
 apply plugin: 'generateCode'
 //apply plugin: 'apiDoc'
 apply plugin: 'delete'
-apply plugin: 'help'
+//apply plugin: 'help'
 
 generateCode {
     host '192.168.88.13'
@@ -46,11 +46,11 @@ del {
 //    suffix 't'
 }
 
-b_help{
-    id 'del'
-}
+//b_help{
+//    id 'del'
+//}
 
-group 'org.breeze.work'
+group 'org.soliloquize'
 version '1.0'
 
 sourceCompatibility = 1.8
@@ -65,7 +65,7 @@ repositories {
 install {
     repositories.mavenInstaller {
         pom.version =  project.version
-        pom.artifactId = 'breeze'
+        pom.artifactId = 'gradle-plugins'
         pom.groupId = project.group
     }
 }
@@ -83,9 +83,9 @@ dependencies {
 uploadArchives {
     repositories {
         mavenDeployer {
-            pom.groupId = 'org.breeze.work'
+            pom.groupId = project.group
             pom.artifactId = 'gradle-plugins'
-            pom.version = '1.0'
+            pom.version = project.version
             repository(url: uri('./repo'))
         }
     }

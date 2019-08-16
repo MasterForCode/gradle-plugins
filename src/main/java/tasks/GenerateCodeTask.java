@@ -15,6 +15,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
 
 /**
@@ -96,9 +97,11 @@ public class GenerateCodeTask extends DefaultTask {
     private String getType(String stringType) {
         if (stringType.startsWith("int")) {
             return "Integer";
-        } else if (stringType.startsWith("varchar")) {
+        } else if  (stringType.startsWith("bigint")) {
+            return "Long";
+        }else if (stringType.startsWith("varchar") || stringType.startsWith("text")) {
             return "String";
-        } else if (stringType.startsWith("data")) {
+        } else if (stringType.startsWith("date") || stringType.startsWith("datetime")) {
             return "Date";
         } else {
             // TODO Fixme
@@ -114,7 +117,8 @@ public class GenerateCodeTask extends DefaultTask {
         String serviceImplPath = generateCoeExtension.getServiceImplPath();
         String daoPath = generateCoeExtension.getDaoPath();
         System.out.println("准备生成文件......");
-        tableList.forEach(each -> {
+        CountDownLatch countDownLatch = new CountDownLatch(tableList.size());
+        tableList.forEach(each -> new Thread(() -> {
             String tableName = this.getUpCaseTableName(each.getTableName());
             String entityContent = this.getEntityContent(each, entityPath);
             this.doAction(rootDirPath, entityPath, entityContent, tableName);
@@ -126,7 +130,14 @@ public class GenerateCodeTask extends DefaultTask {
             this.doAction(rootDirPath, serviceImplPath, serviceImplContent, tableName + "ServiceImpl");
             String daoContent = this.getDaoContent(each, daoPath, entityPath);
             this.doAction(rootDirPath, daoPath, daoContent, tableName + "Dao");
-        });
+            countDownLatch.countDown();
+        }).start());
+        try {
+            countDownLatch.await();
+        } catch (InterruptedException e) {
+            System.out.println("多线程执行任务异常");
+            e.printStackTrace();
+        }
     }
 
     private String getEntityContent(Table table, String entityPath) {
@@ -141,6 +152,7 @@ public class GenerateCodeTask extends DefaultTask {
         entityContent += "import lombok.Data;" + SEPARATOR + SEPARATOR;
         entityContent += "import javax.persistence.Entity;" + SEPARATOR;
         entityContent += "import javax.persistence.Table;" + SEPARATOR;
+        entityContent += "import java.util.Date;" + SEPARATOR;
         boolean isAutoIncrement = false;
         boolean isId = false;
         for (Column column : columnList) {
