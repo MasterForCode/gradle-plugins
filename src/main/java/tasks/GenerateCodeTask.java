@@ -97,9 +97,9 @@ public class GenerateCodeTask extends DefaultTask {
     private String getType(String stringType) {
         if (stringType.startsWith("int")) {
             return "Integer";
-        } else if  (stringType.startsWith("bigint")) {
+        } else if (stringType.startsWith("bigint")) {
             return "Long";
-        }else if (stringType.startsWith("varchar") || stringType.startsWith("text")) {
+        } else if (stringType.startsWith("varchar") || stringType.startsWith("text")) {
             return "String";
         } else if (stringType.startsWith("date") || stringType.startsWith("datetime")) {
             return "Date";
@@ -293,13 +293,13 @@ public class GenerateCodeTask extends DefaultTask {
         methodContent += closeMethodContent;
         // Put updateOne
         methodContent += "    @PutMapping(value = \"/\")" + SEPARATOR;
-        methodContent += "    public " + tableName + "updateOne(@RequestBody " + tableName + " " + lowerCaseTableName + ") {" + SEPARATOR;
+        methodContent += "    public " + tableName + " updateOne(@RequestBody " + tableName + " " + lowerCaseTableName + ") {" + SEPARATOR;
         methodContent += "        return this." + lowerCaseServiceName + ".updateOne(" + lowerCaseTableName + ");" + SEPARATOR;
         methodContent += closeMethodContent;
         // Delete deleteOne
         methodContent += "    @DeleteMapping(value = \"/{" + javaPrimaryName + "}\")" + SEPARATOR;
-        methodContent += "    public " + tableName + " deleteById(@PathVariable(name = \"" + javaPrimaryName + "\") " + primaryType + " " + javaPrimaryName + ") {" + SEPARATOR;
-        methodContent += "        return this." + lowerCaseServiceName + ".deleteById(" + javaPrimaryName + ");" + SEPARATOR;
+        methodContent += "    public void deleteById(@PathVariable(name = \"" + javaPrimaryName + "\") " + primaryType + " " + javaPrimaryName + ") {" + SEPARATOR;
+        methodContent += "        this." + lowerCaseServiceName + ".deleteById(" + javaPrimaryName + ");" + SEPARATOR;
         methodContent += closeMethodContent;
         return methodContent;
     }
@@ -387,7 +387,7 @@ public class GenerateCodeTask extends DefaultTask {
         methodContent += closeMethodContent;
         // findById
         methodContent += overrideContent;
-        methodContent += "    public List<" + tableName + "> findById(" + primaryType + " " + primaryName + ") {" + SEPARATOR;
+        methodContent += "    public " + tableName + " findById(" + primaryType + " " + primaryName + ") {" + SEPARATOR;
         methodContent += "        return this." + lowerCaseDaoName + ".findById(" + primaryName + ")" + ".orElse(null);" + SEPARATOR;
         methodContent += closeMethodContent;
         // addOne

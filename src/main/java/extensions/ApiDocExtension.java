@@ -1,16 +1,19 @@
 package extensions;
 
+import lombok.Data;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by wb on 2018/11/28.
  */
+@Data
+@Deprecated
 public class ApiDocExtension {
-    private String controllerPath;
+    private List<String> controllerPath = new ArrayList<>();
 
-    public String getControllerPath() {
-        return controllerPath;
-    }
+    private List<String> beanPath = new ArrayList<>();
 
-    public void setControllerPath(String controllerPath) {
-        this.controllerPath = controllerPath;
-    }
+    private List<String> controllerNameList = new ArrayList<>();
 }

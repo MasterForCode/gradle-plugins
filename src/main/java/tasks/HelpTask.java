@@ -30,7 +30,7 @@ public class HelpTask extends DefaultTask {
                         "    dataBase 'world'\n" +
                         "    user 'root'\n" +
                         "    password 'wangbin_123'\n" +
-                        "    entityPath 'entity'\n" +
+                        "    beanPath 'entity'\n" +
                         "    controllerPath 'controller'\n" +
                         "    servicePath 'service'\n" +
                         "    serviceImplPath 'service.impl'\n" +
@@ -41,6 +41,8 @@ public class HelpTask extends DefaultTask {
                 System.out.println("like this: b_help{\n" +
                         "    id 'help' \n" +
                         "}");
+                break;
+            default:
                 break;
         }
     }
